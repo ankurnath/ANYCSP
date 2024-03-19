@@ -132,7 +132,9 @@ def validate():
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument("--model_dir", type=str, default='models/comb/test', help="Model directory")
+    parser.add_argument("--distribution", type=str,help="Distribution of graphs")
+    # parser.add_argument("--model_dir", type=str, default='models/comb/test', help="Model directory")
+
     parser.add_argument("--seed", type=int, default=0, help="the random seed for torch and numpy")
     parser.add_argument("--logging_steps", type=int, default=10, help="Training steps between logging")
     parser.add_argument("--checkpoint_steps", type=int, default=5000, help="Training steps between saving checkpoints")
@@ -153,6 +155,10 @@ if __name__ == '__main__':
 
     config = read_config(args.config)
 
+    model_dir=f'models/{args.distribution}'
+    args.model_dir=model_dir
+    # os.mkdir(model_dir)
+
     if args.pretrained_dir is None:
         model = ANYCSP(args.model_dir, config)
     else:
@@ -162,6 +168,17 @@ if __name__ == '__main__':
     model.to(device)
     model.train()
 
+    # data load
+    config['train_data']={
+        "FILES": {
+            "path": f"../data/training/{args.distribution}/*.npz"
+        }
+    }
+    config['val_data']={
+        "FILES": {
+            "path": f"../data/validation/{args.distribution}/*.npz"
+        }
+    }
     train_data = dataset_from_config(config['train_data'], config['epoch_steps'] * config['batch_size'])
     train_loader = DataLoader(
         train_data,

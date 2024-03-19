@@ -1,6 +1,8 @@
 from src.csp.csp_data import CSP_Data
 from src.utils.data_utils import load_dimacs_cnf, load_mtx, load_mc
 from src.data.xparser import XParser
+from scipy.sparse import load_npz
+import networkx as nx
 
 from glob import glob
 import numpy as np
@@ -113,12 +115,27 @@ def load_mtx_file(path):
     return data
 
 
+def load_npz_file(path):
+    matrix=load_npz(path).toarray()
+    g = nx.from_numpy_matrix(matrix)
+    edge_weights=[]
+    for edge in g.edges():
+        edge_weights.append(g.edges[edge]['weight'])
+    edge_weights=np.array(edge_weights)
+    data = nx_to_maxcut(g, edge_weights, path=path)
+    return data
+
+
+
+
+
 class File_Dataset(Dataset):
 
-    def __init__(self, path, preload=True):
+    def __init__(self, path, preload=False):
         super(File_Dataset, self).__init__()
         self.path = path
         self.files = glob(path)
+        self.files.sort()
 
         self.preload = preload
         if self.preload:
@@ -135,6 +152,9 @@ class File_Dataset(Dataset):
             data = load_mc_file(file_path)
         elif postfix == 'mtx':
             data = load_mtx_file(file_path)
+
+        elif postfix=='npz':
+            data=load_npz_file(file_path)
         else:
             raise ValueError(f'File type {postfix} is not supported.')
         return data

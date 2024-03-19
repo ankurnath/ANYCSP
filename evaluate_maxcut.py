@@ -2,6 +2,8 @@ import torch
 import numpy as np
 from src.csp.csp_data import CSP_Data
 from src.model.model import ANYCSP
+import pandas as pd
+import os
 
 from argparse import ArgumentParser
 from src.data.dataset import File_Dataset
@@ -9,11 +11,13 @@ from src.data.dataset import File_Dataset
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument("--model_dir", type=str, help="Model directory")
-    parser.add_argument("--data_path", type=str, help="Path to the training data")
+    parser.add_argument("--distribution", type=str, help="distribution")
+    # parser.add_argument("--data_path", type=str, help="Path to the training data")
     parser.add_argument("--checkpoint", type=str, default='best', help="Name of the checkpoint")
     parser.add_argument("--seed", type=int, default=0, help="the random seed for torch and numpy")
-    parser.add_argument("--network_steps", type=int, default=100000, help="Number of network steps during evaluation")
+    # parser.add_argument("--network_steps", type=int, default=100000, help="Number of network steps during evaluation")
+    
+    parser.add_argument("--network_steps", type=int, default=10000, help="Number of network steps during evaluation")
     parser.add_argument("--num_boost", type=int, default=20, help="Number of parallel evaluate runs")
     parser.add_argument("--verbose", action='store_true', default=False, help="Output intermediate optima")
     parser.add_argument("--timeout", type=int, default=180, help="Timeout in seconds")
@@ -25,14 +29,19 @@ if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     name = 'model' if args.checkpoint is None else f'{args.checkpoint}'
+    model_dir=f'models/{args.distribution}'
+    args.model_dir=model_dir
     model = ANYCSP.load_model(args.model_dir, name)
     model.eval()
     model.to(device)
+
+    args.data_path=f"../data/training/{args.distribution}/*.npz"
 
     dataset = File_Dataset(args.data_path)
 
     num_solved = 0
     num_total = len(dataset)
+    data_list = []
 
     for data in dataset:
         file = data.path
@@ -72,4 +81,20 @@ if __name__ == '__main__':
             f'Opt Step: {data.opt_step}'
         )
 
+        data_list.append({
+        'File': file,
+        'Solved': "Solved" if solved else "Unsolved",
+        'Num Unsat': int(best),
+        'Cut Value': best_cut_val,
+        'Steps': data.num_steps,
+        'Opt Time': data.opt_time,
+        'Opt Step': data.opt_step
+        })
+
     print(f'Solved {100 * num_solved / num_total:.2f}%')
+    # Convert the list of dictionaries to a pandas DataFrame
+    df = pd.DataFrame(data_list)
+    model_data_dir=f'models/{args.distribution}/data'
+    os.makedirs(model_data_dir)
+    file_path=os.path.join(model_data_dir,'results.pkl')
+    df.to_pickle(file_path)

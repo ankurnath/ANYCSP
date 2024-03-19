@@ -17,12 +17,12 @@
     "val_batch_size": 50,
     "train_data": {
         "FILES": {
-            "path": "data/train/Uniform Random-3-SAT/*.npz"
+            "path": "../data/training/ER_20/*.npz"
         }
     },
     "val_data": {
         "FILES": {
-            "path": "data/validation/Uniform Random-3-SAT/*.npz"
+            "path": "../data/validation/ER_20/*.npz"
         }
     }
 }
