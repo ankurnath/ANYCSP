@@ -17,12 +17,12 @@
     "val_batch_size": 50,
     "train_data": {
         "FILES": {
-            "path": "../data/training/ER_20/*.npz"
+            "path": "../data/training/ER_200/*.npz"
         }
     },
     "val_data": {
         "FILES": {
-            "path": "../data/validation/ER_20/*.npz"
+            "path": "../data/validation/ER_200/*.npz"
         }
     }
 }

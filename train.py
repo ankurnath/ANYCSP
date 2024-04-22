@@ -50,7 +50,8 @@ def train_epoch():
     unsat_ratio_list = []
     solved_list = []
 
-    for data in tqdm(train_loader, total=len(train_loader), disable=args.no_bar, desc=f'Training Epoch {epoch+1}'):
+    for data in tqdm(train_loader, total=len(train_loader), 
+                     disable=args.no_bar, desc=f'Training Epoch {epoch+1}'):
         opt.zero_grad()
         data.to(device)
 
@@ -142,7 +143,7 @@ if __name__ == '__main__':
     parser.add_argument("--no_bar", action='store_true', default=False, help="Turn of tqdm bar")
     parser.add_argument("--from_last", action='store_true', default=False, help="Continue from existing last checkpoint")
     parser.add_argument("--pretrained_dir", type=str, default=None, help="Pretrained Model directory")
-    parser.add_argument("--config", type=str, help="path the config file")
+    parser.add_argument("--config", type=str,default='configs/MAXCUT/MAXCUT_default.json', help="path the config file")
     args = parser.parse_args()
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
@@ -155,7 +156,7 @@ if __name__ == '__main__':
 
     config = read_config(args.config)
 
-    model_dir=f'models/{args.distribution}'
+    model_dir=f'pretrained agents/{args.distribution}'
     args.model_dir=model_dir
     # os.mkdir(model_dir)
 

@@ -94,7 +94,8 @@ if __name__ == '__main__':
     print(f'Solved {100 * num_solved / num_total:.2f}%')
     # Convert the list of dictionaries to a pandas DataFrame
     df = pd.DataFrame(data_list)
+    df.sort_values(by=['File'])
     model_data_dir=f'models/{args.distribution}/data'
     os.makedirs(model_data_dir)
-    file_path=os.path.join(model_data_dir,'results.pkl')
+    file_path=os.path.join(model_data_dir,'results')
     df.to_pickle(file_path)
