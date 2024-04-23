@@ -94,8 +94,8 @@ def train_epoch():
             unsat_ratio_list = []
             solved_list = []
 
-        # if (model.global_step + 1) % args.checkpoint_steps == 0:
-        #     model.save_model(name=f'checkpoint_{model.global_step}')
+        if (model.global_step + 1) % args.checkpoint_steps == 0:
+            model.save_model(name=f'checkpoint_{model.global_step}')
 
         model.global_step += 1
 
@@ -172,12 +172,12 @@ if __name__ == '__main__':
     # data load
     config['train_data']={
         "FILES": {
-            "path": f"../data/training/{args.distribution}/*.npz"
+            "path": f"../data/training/{args.distribution}"
         }
     }
     config['val_data']={
         "FILES": {
-            "path": f"../data/validation/{args.distribution}/*.npz"
+            "path": f"../data/validation/{args.distribution}"
         }
     }
     train_data = dataset_from_config(config['train_data'], config['epoch_steps'] * config['batch_size'])

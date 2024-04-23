@@ -95,6 +95,6 @@ if __name__ == '__main__':
         # break
     df=pd.DataFrame(df)
     data_folder=os.path.join(model_dir,'data')
-    os.makedirs(data_folder)
+    os.makedirs(data_folder,exist_ok=True)
     df.to_pickle(os.path.join(data_folder,'results'))
     print(f'Solved {100 * num_solved / num_total:.2f}%, Average Time: {total_time / num_total:.2f}s')

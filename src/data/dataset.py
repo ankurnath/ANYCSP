@@ -4,7 +4,8 @@ from src.data.xparser import XParser
 from scipy.sparse import load_npz
 import networkx as nx
 
-from glob import glob
+# from glob import glob
+import glob
 import numpy as np
 from tqdm import tqdm
 import os
@@ -134,11 +135,9 @@ class File_Dataset(Dataset):
 
     def __init__(self, path, preload=False):
         super(File_Dataset, self).__init__()
-        # print(path)
-        # print(os.listdir(path))
         self.path = path
-        # self.files = glob(path)
-        self.files=glob(path + '/*')
+        self.files=glob.glob(path + '/*')
+        
 
         remove_files=[]
         for file_path in self.files:
