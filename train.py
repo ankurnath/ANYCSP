@@ -94,8 +94,8 @@ def train_epoch():
             unsat_ratio_list = []
             solved_list = []
 
-        if (model.global_step + 1) % args.checkpoint_steps == 0:
-            model.save_model(name=f'checkpoint_{model.global_step}')
+        # if (model.global_step + 1) % args.checkpoint_steps == 0:
+        #     model.save_model(name=f'checkpoint_{model.global_step}')
 
         model.global_step += 1
 

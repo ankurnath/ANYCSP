@@ -13,16 +13,16 @@
     "weight_decay": 0.0,
     "discount": 0.75,
     "reward": "improve",
-    "batch_size": 2,
+    "batch_size": 25,
     "val_batch_size": 50,
     "train_data": {
         "FILES": {
-            "path": "data/train/Uniform Random-3-SAT/*.npz"
+            "path": ""
         }
     },
     "val_data": {
         "FILES": {
-            "path": "data/validation/Uniform Random-3-SAT/*.npz"
+            "path": ""
         }
     }
 }

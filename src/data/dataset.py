@@ -7,6 +7,7 @@ import networkx as nx
 from glob import glob
 import numpy as np
 from tqdm import tqdm
+import os
 
 import torch
 from torch.utils.data import Dataset
@@ -133,8 +134,22 @@ class File_Dataset(Dataset):
 
     def __init__(self, path, preload=False):
         super(File_Dataset, self).__init__()
+        # print(path)
+        # print(os.listdir(path))
         self.path = path
-        self.files = glob(path)
+        # self.files = glob(path)
+        self.files=glob(path + '/*')
+
+        remove_files=[]
+        for file_path in self.files:
+            postfix = file_path.split('.')[-1]
+            if postfix not in ['xml','cnf','mc','mtx','npz']:
+                remove_files.append(file_path)
+        
+        for remove_file in remove_files:
+            self.files.remove(remove_file)
+
+
         self.files.sort()
 
         self.preload = preload
