@@ -94,8 +94,8 @@ def train_epoch():
             unsat_ratio_list = []
             solved_list = []
 
-        if (model.global_step + 1) % args.checkpoint_steps == 0:
-            model.save_model(name=f'checkpoint_{model.global_step}')
+        # if (model.global_step + 1) % args.checkpoint_steps == 0:
+        #     model.save_model(name=f'checkpoint_{model.global_step}')
 
         model.global_step += 1
 
@@ -144,11 +144,27 @@ if __name__ == '__main__':
     parser.add_argument("--from_last", action='store_true', default=False, help="Continue from existing last checkpoint")
     parser.add_argument("--pretrained_dir", type=str, default=None, help="Pretrained Model directory")
     parser.add_argument("--config", type=str,default='configs/MAXCUT/MAXCUT_default.json', help="path the config file")
+    parser.add_argument("--device", type=int,default=None, help="cuda device")
     args = parser.parse_args()
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    # Get the number of CUDA devices
+    # num_devices = torch.cuda.device_count()
+    # for i in range(num_devices):
+    #     device_name = torch.cuda.get_device_name(i)
+    #     print("CUDA Device {}: {}".format(i, device_name))
+
+    if torch.cuda.is_available():
+        if args.device is None:
+            device = 'cuda:0' 
+        else:
+            device=f'cuda:args.device'
+
+    else:
+        device='cpu'
+
+    
 
     if args.from_last:
         args.pretrained_dir = args.model_dir
@@ -210,16 +226,21 @@ if __name__ == '__main__':
     best_unsat = np.float32('inf')
     best_solved = 0.0
     start_step = 0
-    for epoch in range(config['epochs']):
-        train_epoch()
+    if os.path.exists(os.path.join(model_dir,'last.pkl')):
+        print('Training already completed')
+    else:
+        # pass
+        for epoch in range(config['epochs']):
+            train_epoch()
 
-        if val_loader is not None:
-            unsat, solved = validate()
+            if val_loader is not None:
+                unsat, solved = validate()
 
-            print(f'Mean Unsat Count: {unsat:.2f}, Solved: {100 * solved:.2f}%')
-            if unsat < best_unsat:
-                model.save_model(name='best')
-                best_unsat = unsat
+                print(f'Mean Unsat Count: {unsat:.2f}, Solved: {100 * solved:.2f}%')
+                if unsat < best_unsat:
+                    model.save_model(name='best')
+                    best_unsat = unsat
 
+            
+            save_opt_states(model.model_dir)
         model.save_model(name='last')
-        save_opt_states(model.model_dir)
