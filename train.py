@@ -150,10 +150,10 @@ if __name__ == '__main__':
     np.random.seed(args.seed)
 
     # Get the number of CUDA devices
-    # num_devices = torch.cuda.device_count()
-    # for i in range(num_devices):
-    #     device_name = torch.cuda.get_device_name(i)
-    #     print("CUDA Device {}: {}".format(i, device_name))
+    num_devices = torch.cuda.device_count()
+    for i in range(num_devices):
+        device_name = torch.cuda.get_device_name(i)
+        print("CUDA Device {}: {}".format(i, device_name))
 
     if torch.cuda.is_available():
         if args.device is None:
