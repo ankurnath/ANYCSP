@@ -159,7 +159,7 @@ if __name__ == '__main__':
         if args.device is None:
             device = 'cuda:0' 
         else:
-            device=f'cuda:args.device'
+            device=f'cuda:{args.device}'
 
     else:
         device='cpu'
