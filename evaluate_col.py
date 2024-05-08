@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     # data_dict = {p: load_dimacs_graph(p) for p in tqdm(glob(args.data_path))}
     # data_dict = {p: nx_to_col(g, args.num_colors) for p, g in data_dict.items()}
-    data_dict ={i: nx_to_col(dataset.get(), args.num_colors) for i in range(5)}
+    data_dict ={i: nx_to_col(dataset.get(), args.num_colors) for i in range(len(dataset))}
 
     num_solved = 0
     num_total = len(data_dict)
