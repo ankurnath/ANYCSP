@@ -22,16 +22,31 @@ if __name__ == '__main__':
     # parser.add_argument("--data_path", type=str, help="Path to the training data")
     parser.add_argument("--checkpoint_name", type=str, default='best', help="Name of the checkpoint")
     parser.add_argument("--seed", type=int, default=0, help="the random seed for torch and numpy")
-    parser.add_argument("--network_steps", type=int, default=1000, help="Number of network steps during evaluation")
-    parser.add_argument("--num_boost", type=int, default=1, help="Number of parallel evaluate runs")
+    parser.add_argument("--network_steps", type=int, default=10000, help="Number of network steps during evaluation")
+    parser.add_argument("--num_boost", type=int, default=50, help="Number of parallel evaluate runs")
     parser.add_argument("--verbose", action='store_true', default=False, help="Output intermediate optima")
     parser.add_argument("--timeout", type=int, default=1200, help="Timeout in seconds")
     parser.add_argument("--num_colors", type=int,default=3, help="Number of colors")
+    parser.add_argument("--device", type=int,default=None, help="cuda device")
     args = parser.parse_args()
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    # device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    # Get the number of CUDA devices
+    num_devices = torch.cuda.device_count()
+    for i in range(num_devices):
+        device_name = torch.cuda.get_device_name(i)
+        print("CUDA Device {}: {}".format(i, device_name))
+
+    if torch.cuda.is_available():
+        if args.device is None:
+            device = 'cuda:0' 
+        else:
+            device=f'cuda:{args.device}'
+
+    else:
+        device='cpu'
 
     # name = 'model' if args.checkpoint is None else f'{args.checkpoint}'
     model_dir=f'pretrained agents color/{args.distribution}'
