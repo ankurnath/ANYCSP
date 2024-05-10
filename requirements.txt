@@ -1,0 +1,12 @@
+protobuf==3.20.0
+numpy
+torch-cluster
+torch-geometric
+torch-scatter
+torch-sparse
+torch-spline-conv
+tensorboard
+tqdm
+networkx
+cnfgen
+pycsp3
