@@ -1,12 +1,13 @@
 import torch
 import numpy as np
+from argparse import ArgumentParser
+
 from src.csp.csp_data import CSP_Data
 from src.model.model import ANYCSP
+from src.data.dataset import File_Dataset
+from collections import defaultdict
 import pandas as pd
 import os
-
-from argparse import ArgumentParser
-from src.data.dataset import File_Dataset
 
 
 if __name__ == '__main__':
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     parser.add_argument("--network_steps", type=int, default=4000, help="Number of network steps during evaluation")
     parser.add_argument("--num_boost", type=int, default=50, help="Number of parallel evaluate runs")
     parser.add_argument("--verbose", action='store_true', default=False, help="Output intermediate optima")
-    parser.add_argument("--timeout", type=int, default=180, help="Timeout in seconds")
+    parser.add_argument("--timeout", type=int, default=1200, help="Timeout in seconds")
     parser.add_argument("--device", type=int,default=None, help="cuda device")
     args = parser.parse_args()
     torch.manual_seed(args.seed)
@@ -46,20 +47,20 @@ if __name__ == '__main__':
     
 
     name = 'model' if args.checkpoint is None else f'{args.checkpoint}'
-    model_dir=f'models/{args.train_distribution}'
+    model_dir=f'pretrained agents/{args.train_distribution}'
     args.model_dir=model_dir
     model = ANYCSP.load_model(args.model_dir, name)
     model.eval()
     model.to(device)
 
-    args.data_path=f"../data/training/{args.test_distribution}/*.npz"
+    datapath=f'../data/testing/{args.test_distribution}'
 
-    dataset = File_Dataset(args.data_path)
+    dataset = File_Dataset(datapath)
 
     num_solved = 0
     num_total = len(dataset)
     data_list = []
-
+    df=defaultdict(list)
     for data in dataset:
         file = data.path
         max_val = data.constraints['ext'].cst_neg_mask.int().sum().cpu().numpy()
@@ -98,21 +99,15 @@ if __name__ == '__main__':
             f'Opt Step: {data.opt_step}'
         )
 
-        data_list.append({
-        'File': file,
-        'Solved': "Solved" if solved else "Unsolved",
-        'Num Unsat': int(best),
-        'Cut Value': best_cut_val,
-        'Steps': data.num_steps,
-        'Opt Time': data.opt_time,
-        'Opt Step': data.opt_step
-        })
+        df['cut'].append(best_cut_val)
+        df['Opt Step'].append(data.opt_step)
+        df['Opt Time'].append(data.opt_time)
 
-    print(f'Solved {100 * num_solved / num_total:.2f}%')
+    # print(f'Solved {100 * num_solved / num_total:.2f}%')
     # Convert the list of dictionaries to a pandas DataFrame
-    df = pd.DataFrame(data_list)
-    df.sort_values(by=['File'])
-    model_data_dir=f'generalization/{args.train_distribution}_ANYCSP'
-    os.makedirs(model_data_dir)
-    file_path=os.path.join(model_data_dir,f'results_{args.test_distribution}')
+    df = pd.DataFrame(df)
+    # df.sort_values(by=['File'])
+    data_dir=f'generalization/{args.train_distribution}_ANYCSP'
+    os.makedirs(data_dir,exist_ok=True)
+    file_path=os.path.join(data_dir,f'results_{args.test_distribution}')
     df.to_pickle(file_path)
