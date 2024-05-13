@@ -101,6 +101,8 @@ if __name__ == '__main__':
         )
 
         df["Solved"].append(True if solved else False)
+        df['Steps'].append(data.num_steps)
+        df['Num Unsat'].append(int(best))
         df['Opt Step'].append(data.opt_step)
         df['Opt Time'].append(data.opt_time)
 
