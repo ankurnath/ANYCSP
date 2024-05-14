@@ -135,6 +135,7 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("--distribution", type=str,help="Distribution of graphs")
     # parser.add_argument("--model_dir", type=str, default='models/comb/test', help="Model directory")
+    parser.add_argument("--overwrite", type=bool,default=False,help="Force to train again")
 
     parser.add_argument("--seed", type=int, default=0, help="the random seed for torch and numpy")
     parser.add_argument("--logging_steps", type=int, default=10, help="Training steps between logging")
@@ -230,7 +231,7 @@ if __name__ == '__main__':
     best_unsat = np.float32('inf')
     best_solved = 0.0
     start_step = 0
-    if os.path.exists(os.path.join(model_dir,'last.pkl')):
+    if os.path.exists(os.path.join(model_dir,'last.pkl')) and not args.overwrite:
         print('Training already completed')
     else:
         # pass
