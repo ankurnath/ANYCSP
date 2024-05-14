@@ -1,4 +1,5 @@
 {
+    "task": "maxcut",
     "hidden_dim": 128,
     "aggr_val2cst": "sum",
     "aggr_cst2val": "sum",

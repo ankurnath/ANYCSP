@@ -145,14 +145,18 @@ def load_mtx_file(path):
     return data
 
 
-def load_npz_file(path):
+def load_npz_file(path,task,num_colors=3):
     matrix=load_npz(path).toarray()
     g = nx.from_numpy_matrix(matrix)
     edge_weights=[]
     for edge in g.edges():
         edge_weights.append(g.edges[edge]['weight'])
     edge_weights=np.array(edge_weights)
-    data = nx_to_maxcut(g, edge_weights, path=path)
+    if task=="maxcut":
+    
+        data = nx_to_maxcut(g, edge_weights, path=path)
+    elif task=="coloring":
+        data = nx_to_col(g,num_colors=num_colors)
     return data
 
 
@@ -161,10 +165,11 @@ def load_npz_file(path):
 
 class File_Dataset(Dataset):
 
-    def __init__(self, path, preload=False):
+    def __init__(self, path, preload=False,task='maxcut'):
         super(File_Dataset, self).__init__()
         self.path = path
         self.files=glob.glob(path + '/*')
+        self.task=task
         
 
         remove_files=[]
@@ -196,7 +201,7 @@ class File_Dataset(Dataset):
             data = load_mtx_file(file_path)
 
         elif postfix=='npz':
-            data=load_npz_file(file_path)
+            data=load_npz_file(file_path,self.task)
         else:
             raise ValueError(f'File type {postfix} is not supported.')
         return data

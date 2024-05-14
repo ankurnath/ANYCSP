@@ -21,9 +21,9 @@ def read_config(path):
     return conf_dict
 
 
-def dataset_from_config(data_config, num_samples=1000):
+def dataset_from_config(data_config, num_samples=1000,task=None):
     if 'FILES' in data_config:
-        dataset = File_Dataset(**data_config['FILES'])
+        dataset = File_Dataset(**data_config['FILES'],task)
     else:
         generators = [generator_dict[name](**kwargs) for name, kwargs in data_config.items()]
         dataset = Generator_Dataset(generators, num_samples)

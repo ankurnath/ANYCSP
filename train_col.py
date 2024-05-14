@@ -145,6 +145,7 @@ if __name__ == '__main__':
     parser.add_argument("--pretrained_dir", type=str, default=None, help="Pretrained Model directory")
     parser.add_argument("--config", type=str,default='configs/COL/COL_default.json', help="path the config file")
     parser.add_argument("--device", type=int,default=None, help="cuda device")
+    
     args = parser.parse_args()
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
@@ -196,7 +197,10 @@ if __name__ == '__main__':
             "path": f"../data_color/validation/{args.distribution}"
         }
     }
-    train_data = dataset_from_config(config['train_data'], config['epoch_steps'] * config['batch_size'])
+    train_data = dataset_from_config(config['train_data'], 
+                                     config['epoch_steps'] * config['batch_size'],
+                                     task=config["task"]
+                                    )
     train_loader = DataLoader(
         train_data,
         batch_size=config['batch_size'],
@@ -205,7 +209,7 @@ if __name__ == '__main__':
     )
 
     if 'val_data' in config:
-        val_data = dataset_from_config(config['val_data'])
+        val_data = dataset_from_config(config['val_data'],task=config["task"])
         val_loader = DataLoader(
             val_data,
             batch_size=config['val_batch_size'],
