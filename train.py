@@ -207,7 +207,7 @@ if __name__ == '__main__':
     )
 
     if 'val_data' in config:
-        val_data = dataset_from_config(config['val_data'])
+        val_data = dataset_from_config(config['val_data'],task=config['task'])
         val_loader = DataLoader(
             val_data,
             batch_size=config['val_batch_size'],
