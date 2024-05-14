@@ -157,6 +157,8 @@ def load_npz_file(path,task,num_colors=3):
         data = nx_to_maxcut(g, edge_weights, path=path)
     elif task=="coloring":
         data = nx_to_col(g,num_colors=num_colors)
+    else:
+        raise ValueError("Unknown objective function")
     return data
 
 

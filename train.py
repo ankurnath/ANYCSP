@@ -196,7 +196,9 @@ if __name__ == '__main__':
             "path": f"../data/validation/{args.distribution}"
         }
     }
-    train_data = dataset_from_config(config['train_data'], config['epoch_steps'] * config['batch_size'])
+    train_data = dataset_from_config(config['train_data'], 
+                                     config['epoch_steps'] * config['batch_size'],
+                                     config['task'])
     train_loader = DataLoader(
         train_data,
         batch_size=config['batch_size'],
