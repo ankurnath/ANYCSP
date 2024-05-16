@@ -1,9 +1,9 @@
 {
-    "task": "coloring",
+    "task": "maxcut",
     "hidden_dim": 128,
-    "aggr_val2cst": "max",
-    "aggr_cst2val": "max",
-    "aggr_val2var": "max",
+    "aggr_val2cst": "sum",
+    "aggr_cst2val": "sum",
+    "aggr_val2var": "sum",
     "sampling": "global",
     "T_train": 40,
     "T_val": 200,
@@ -15,15 +15,15 @@
     "discount": 0.75,
     "reward": "improve",
     "batch_size": 25,
-    "val_batch_size": 100,
+    "val_batch_size": 50,
     "train_data": {
         "FILES": {
-            "path": "../data_color/training/3col_200vertices"
+            "path": "../data/training/Physics"
         }
     },
     "val_data": {
         "FILES": {
-            "path": "../data_color/validation/3col_200vertices"
+            "path": "../data/validation/Physics"
         }
     }
 }
