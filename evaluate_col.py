@@ -22,7 +22,7 @@ if __name__ == '__main__':
     # parser.add_argument("--data_path", type=str, help="Path to the training data")
     parser.add_argument("--checkpoint_name", type=str, default='best', help="Name of the checkpoint")
     parser.add_argument("--seed", type=int, default=0, help="the random seed for torch and numpy")
-    parser.add_argument("--network_steps", type=int, default=100000, help="Number of network steps during evaluation")
+    parser.add_argument("--network_steps", type=int, default=10000, help="Number of network steps during evaluation")
     parser.add_argument("--num_boost", type=int, default=50, help="Number of parallel evaluate runs")
     parser.add_argument("--verbose", action='store_true', default=False, help="Output intermediate optima")
     parser.add_argument("--timeout", type=int, default=1200, help="Timeout in seconds")
